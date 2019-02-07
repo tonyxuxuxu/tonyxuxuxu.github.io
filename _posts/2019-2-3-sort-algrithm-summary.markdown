@@ -9,6 +9,7 @@ catalog: true
 tags:
     - Algrithm
     - Leetcode
+    - Python
 ---
 
 ## 十大排序算法整理
@@ -29,7 +30,7 @@ def bubble_sort(collection):
                collection[j], collection[j+1] = collection[j+1], collection[j]
                swapped = true
     if not swapped:
-        break;
+        break
     return collection
 ```
 
