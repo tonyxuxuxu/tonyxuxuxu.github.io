@@ -7,7 +7,7 @@ author:     "TonyXu"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Algrithm
+    - Algorithm
     - Leetcode
     - Python
 ---
