@@ -206,3 +206,101 @@ Pointers and references are equivalent, except:
 ### 2.4 Pass-by-reference into functions with reference arguments vs pointer arguments
 
 In many situations, we may wish to modify the original copy directly (especially in passing huge object or array) to avoid the overhead of cloning. This can be done by passing a pointer of the object into the function, known as pass-by-reference.
+
+
+A const function formal parameter cannot be modified inside the function. Use const whenever possible as it protects you from inadvertently modifying the parameter and protects you against many programming errors.
+
+A const function parameter can receive both const and non-const argument. On the other hand, a non-const function reference/pointer parameter can only receive non-const argument.
+
+### 2.5 Passing the Function's Return value
+
+You can also pass the return value as reference or pointer.
+
+You should not pass Function's local variable as return value by references
+
+Pass dynamically allocated memory as return value by references
+
+```
+/* Test passing the result (TestPassResultNew.cpp) */
+#include <iostream>
+using namespace std;
+
+int * squarePtr(int);
+int & squareRef(int);
+
+int main() {
+   int number = 8;
+   cout << number << endl;  // 8
+   cout << *squarePtr(number) << endl;  // 64
+   cout << squareRef(number) << endl;   // 64
+}
+
+int * squarePtr(int number) {
+   int * dynamicAllocatedResult = new int(number * number);
+   return dynamicAllocatedResult;
+}
+
+int & squareRef(int number) {
+   int * dynamicAllocatedResult = new int(number * number);
+   return *dynamicAllocatedResult;
+}
+```
+
+## 3 Dynamic Memory Allocation
+
+
+### 3.1 new and delete Operators
+
+Instead of define an int variable (int number), and assign the address of the variable to the int pointer (int \*pNumber = &number), the storage can be dynamically allocated at runtime, via a new operator. In C++, whenever you allocate a piece of memory dynamically via new, you need to use delete to remove the storage (i.e., to return the storage to the heap).
+
+```
+// Static allocation
+int number = 88;
+int * p1 = &number;  // Assign a "valid" address into pointer
+
+// Dynamic Allocation
+int * p2;            // Not initialize, points to somewhere which is invalid
+cout << p2 << endl; // Print address before allocation
+p2 = new int;       // Dynamically allocate an int and assign its address to pointer
+                    // The pointer gets a valid address with memory allocated
+*p2 = 99;
+cout << p2 << endl;  // Print address after allocation
+cout << *p2 << endl; // Print value point-to
+delete p2;           // Remove the dynamically allocated storage
+```
+
+```
+// use an initializer to initialize a fundamental type (such as int, double)
+int * p1 = new int(88);
+double * p2 = new double(1.23);
+
+// C++11 brace initialization syntax
+int * p1 = new int {88};
+double * p2 = new double {1.23};
+
+// invoke a constructor to initialize an object (such as Date, Time)
+Date * date1 = new Date(1999, 1, 1);  
+Time * time1 = new Time(12, 34, 56);
+```
+
+The main differences between static allocation and dynamic allocations are:
+1. In static allocation, the compiler allocates and deallocates the storage automatically, and handle memory management. Whereas in dynamic allocation, you, as the programmer, handle the memory allocation and deallocation yourself (via new and delete operators). You have full control on the pointer addresses and their contents, as well as memory management.
+2. Static allocated entities are manipulated through named variables. Dynamic allocated entities are handled through pointers.
+
+### 3.2 new [] and delete [] Operators
+
+## 4 Pointer, Array and functions
+
+### 4.1 Array is treated as pointers
+
+### 4.2 Pointer Arithmetic
+
+### 4.3 sizeof array
+
+### 4.4 Passing Array In/Out of a function
+
+```
+int max(int numbers[], int size);
+int max(int *numbers, int size);
+int max(int number[50], int size);
+```
