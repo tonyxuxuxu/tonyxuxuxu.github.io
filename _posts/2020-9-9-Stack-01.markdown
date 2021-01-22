@@ -1,0 +1,449 @@
+---
+layout:     post
+title:      "Leetcode Stack类型整理 part01"
+subtitle:   " \"Python Leetcode整理\""
+date:       2020-09-06 12:00:00
+author:     "TonyXu"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - Python
+    - Leetcode
+    - Algorithm
+---
+
+## 155. Min Stack
+
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+push(x) -- Push element x onto stack.
+pop() -- Removes the element on top of the stack.
+top() -- Get the top element.
+getMin() -- Retrieve the minimum element in the stack.
+ 
+
+```
+Example 1:
+
+Input
+["MinStack","push","push","push","getMin","pop","top","getMin"]
+[[],[-2],[0],[-3],[],[],[],[]]
+
+Output
+[null,null,null,null,-3,null,0,-2]
+
+Explanation
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin(); // return -3
+minStack.pop();
+minStack.top();    // return 0
+minStack.getMin(); // return -2
+```
+
+### 方法一
+
+时间复杂度：O(n)
+
+空间复杂度：O(n)
+
+```
+class MinStack:
+
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.stack = []
+        self.min_stack = []
+
+
+    def push(self, x: int) -> None:
+        self.stack.append(x)
+        if not self.min_stack or x <= self.min_stack[-1]:
+            self.min_stack.append(x)
+
+
+    def pop(self) -> None:
+        if self.stack.pop() == self.min_stack[-1]:
+            self.min_stack.pop()
+
+
+    def top(self) -> int:
+        return self.stack[-1]
+
+
+    def getMin(self) -> int:
+        return self.min_stack[-1]
+
+
+
+# Your MinStack object will be instantiated and called as such:
+# obj = MinStack()
+# obj.push(x)
+# obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.getMin()
+```
+
+## 232. Implement Queue using Stacks
+
+Implement the following operations of a queue using stacks.
+
+push(x) -- Push element x to the back of queue.
+pop() -- Removes the element from in front of queue.
+peek() -- Get the front element.
+empty() -- Return whether the queue is empty.
+
+### Example:
+
+```
+MyQueue queue = new MyQueue();
+
+queue.push(1);
+queue.push(2);  
+queue.peek();  // returns 1
+queue.pop();   // returns 1
+queue.empty(); // returns false
+```
+
+### 方法一
+
+时间复杂度：O(n)
+
+空间复杂度：O(n)
+
+```
+class MyQueue:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.stack1 = []
+        self.stack2 = []
+
+
+    def push(self, x: int) -> None:
+        """
+        Push element x to the back of queue.
+        """
+        self.stack1.append(x)
+
+
+    def pop(self) -> int:
+        """
+        Removes the element from in front of queue and returns that element.
+        """
+        while self.stack1:
+            self.stack2.append(self.stack1.pop())
+        ans = self.stack2.pop()
+        while self.stack2:
+            self.stack1.append(self.stack2.pop())
+        return ans
+
+
+    def peek(self) -> int:
+        """
+        Get the front element.
+        """
+        while self.stack1:
+            self.stack2.append(self.stack1.pop())
+        ans = self.stack2[-1]
+        while self.stack2:
+            self.stack1.append(self.stack2.pop())
+        return ans
+
+
+    def empty(self) -> bool:
+        """
+        Returns whether the queue is empty.
+        """
+        return len(self.stack1) == 0
+
+
+
+# Your MyQueue object will be instantiated and called as such:
+# obj = MyQueue()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.peek()
+# param_4 = obj.empty()
+```
+
+## 150. Evaluate Reverse Polish Notation
+
+Evaluate the value of an arithmetic expression in Reverse Polish Notation.
+
+Valid operators are +, -, \*, /. Each operand may be an integer or another expression.
+
+Note:
+
+Division between two integers should truncate toward zero.
+The given RPN expression is always valid. That means the expression would always evaluate to a result and there won't be any divide by zero operation.
+
+### Example 1:
+
+```
+Input: ["2", "1", "+", "3", "\*"]
+Output: 9
+Explanation: ((2 + 1) * 3) = 9
+```
+
+### Example 2:
+
+```
+Input: ["4", "13", "5", "/", "+"]
+Output: 6
+Explanation: (4 + (13 / 5)) = 6
+```
+
+### Example 3:
+
+```
+Input: ["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]
+Output: 22
+Explanation:
+  ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
+= ((10 * (6 / (12 * -11))) + 17) + 5
+= ((10 * (6 / -132)) + 17) + 5
+= ((10 * 0) + 17) + 5
+= (0 + 17) + 5
+= 17 + 5
+= 22
+```
+
+### 方法一
+
+时间复杂度：O(n)
+
+空间复杂度：O(n)
+
+```
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        stack = []
+        for i in tokens:
+            if i == '+':
+                x = stack.pop()
+                stack[-1] += x
+            elif i == '-':
+                x = stack.pop()
+                stack[-1] -= x
+            elif i == '/':
+                x = stack.pop()
+                stack[-1] = int(stack[-1] / x)
+            elif i == '*':
+                x = stack.pop()
+                stack[-1] *= x
+            else:
+                stack.append(int(i))
+        return stack[0]
+```
+
+## 71. Simplify Path
+
+Given an absolute path for a file (Unix-style), simplify it. Or in other words, convert it to the canonical path.
+
+In a UNIX-style file system, a period . refers to the current directory. Furthermore, a double period .. moves the directory up a level.
+
+Note that the returned canonical path must always begin with a slash /, and there must be only a single slash / between two directory names. The last directory name (if it exists) must not end with a trailing /. Also, the canonical path must be the shortest string representing the absolute path.
+
+ 
+
+### Example 1:
+
+```
+Input: "/home/"
+Output: "/home"
+Explanation: Note that there is no trailing slash after the last directory name.
+```
+
+### Example 2:
+```
+Input: "/../"
+Output: "/"
+Explanation: Going one level up from the root directory is a no-op, as the root level is the highest level you can go.
+```
+
+### Example 3:
+
+```
+Input: "/home//foo/"
+Output: "/home/foo"
+Explanation: In the canonical path, multiple consecutive slashes are replaced by a single one.
+```
+
+###Example 4:
+
+```
+Input: "/a/./b/../../c/"
+Output: "/c"
+```
+
+### Example 5:
+```
+Input: "/a/../../b/../c//.//"
+Output: "/c"
+```
+
+### Example 6:
+```
+Input: "/a//b////c/d//././/.."
+Output: "/a/b/c"
+```
+
+### 方法一
+
+时间复杂度：O(n)
+
+空间复杂度：O(n)
+```
+class Solution:
+    def simplifyPath(self, path: str) -> str:
+        stack = []
+        path = path.split("/")
+
+        for item in path:
+            if item == "..":
+                if stack : stack.pop()
+            elif item and item != ".":
+                stack.append(item)
+        return "/" + "/".join(stack)
+```
+
+## 394. Decode String
+
+Given an encoded string, return its decoded string.
+
+The encoding rule is: k[encoded_string], where the encoded_string inside the square brackets is being repeated exactly k times. Note that k is guaranteed to be a positive integer.
+
+You may assume that the input string is always valid; No extra white spaces, square brackets are well-formed, etc.
+
+Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, k. For example, there won't be input like 3a or 2[4].
+
+ 
+
+### Example 1:
+
+```
+Input: s = "3[a]2[bc]"
+Output: "aaabcbc"
+```
+
+### Example 2:
+```
+Input: s = "3[a2[c]]"
+Output: "accaccacc"
+```
+
+### Example 3:
+```
+Input: s = "2[abc]3[cd]ef"
+Output: "abcabccdcdcdef"
+```
+
+### Example 4:
+```
+Input: s = "abc3[cd]xyz"
+Output: "abccdcdcdxyz"
+```
+
+### 方法一
+
+时间复杂度：O(n)
+
+空间复杂度：O(n)
+
+```
+class Solution:
+    def decodeString(self, s: str) -> str:
+        stack, res, multi = [], "", 0
+        for c in s:
+            if c == '[':
+                stack.append([multi, res])
+                res, multi = "", 0
+            elif c == ']':
+                cur_multi, last_res = stack.pop()
+                res = last_res + cur_multi * res
+            elif '0' <= c <= '9':
+                multi = multi * 10 + int(c)            
+            else:
+                res += c
+        return res
+```
+
+## 215. Kth Largest Element in an Array
+
+Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+### Example 1:
+```
+Input: [3,2,1,5,6,4] and k = 2
+Output: 5
+```
+
+### Example 2:
+```
+Input: [3,2,3,1,2,4,5,5,6] and k = 4
+Output: 4
+```
+
+### 方法一
+
+时间复杂度：O(n)
+
+空间复杂度：O(n)
+
+```
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        import heapq
+        heap = []
+        heapify(heap)
+        for num in nums:
+            heappush(heap, num)
+            if len(heap) > k:
+                heappop(heap)
+        return heap[0]
+```
+
+## 347. Top K Frequent Elements
+
+Given a non-empty array of integers, return the k most frequent elements.
+
+### Example 1:
+
+```
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+```
+
+### Example 2:
+
+```
+Input: nums = [1], k = 1
+Output: [1]
+```
+
+### 方法一
+
+时间复杂度：O(nlogk)
+
+空间复杂度：O(n)
+
+```
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        import heapq
+        dict = collections.Counter(nums)
+        heap = []
+        heapify(heap)
+        for i in dict:
+            heappush(heap, (dict[i], i))
+            if len(heap) > k:
+                heappop(heap)
+        return [i[1] for i in heap]
+```

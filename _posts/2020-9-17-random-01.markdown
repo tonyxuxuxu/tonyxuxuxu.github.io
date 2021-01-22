@@ -1,0 +1,187 @@
+---
+layout:     post
+title:      "Leetcode Radom 类型整理 part01"
+subtitle:   " \"Python Leetcode整理\""
+date:       2020-09-16 12:00:00
+author:     "TonyXu"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - Python
+    - Leetcode
+    - Algorithm
+---
+
+## 384. Shuffle an Array
+
+Shuffle a set of numbers without duplicates.
+
+### Example:
+
+```
+// Init an array with set 1, 2, and 3.
+int[] nums = {1,2,3};
+Solution solution = new Solution(nums);
+
+// Shuffle the array [1,2,3] and return its result. Any permutation of [1,2,3] must equally likely to be returned.
+solution.shuffle();
+
+// Resets the array back to its original configuration [1,2,3].
+solution.reset();
+
+// Returns the random shuffling of array [1,2,3].
+solution.shuffle();
+```
+
+### 方法一
+
+时间复杂度：O(n)
+
+空间复杂度：O(1)
+
+```
+class Solution:
+
+    def __init__(self, nums: List[int]):
+        self.nums = nums
+
+
+    def reset(self) -> List[int]:
+        """
+        Resets the array to its original configuration and return it.
+        """
+        return self.nums
+
+
+    def shuffle(self) -> List[int]:
+        """
+        Returns a random shuffling of the array.
+        """
+        nums = [i for i in self.nums]
+        for i in range(len(nums)):
+            rand = random.randint(i, len(nums)-1)
+            nums[i], nums[rand] = nums[rand], nums[i]
+        return nums
+
+
+
+# Your Solution object will be instantiated and called as such:
+# obj = Solution(nums)
+# param_1 = obj.reset()
+# param_2 = obj.shuffle()
+```
+
+## 398. Random Pick Index
+
+Given an array of integers with possible duplicates, randomly output the index of a given target number. You can assume that the given target number must exist in the array.
+
+Note:
+The array size can be very large. Solution that uses too much extra space will not pass the judge.
+
+### Example:
+
+```
+int[] nums = new int[] {1,2,3,3,3};
+Solution solution = new Solution(nums);
+
+// pick(3) should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
+solution.pick(3);
+
+// pick(1) should return 0. Since in the array only nums[0] is equal to 1.
+solution.pick(1);
+```
+
+### 方法一
+
+时间复杂度：O(n)
+
+空间复杂度：O(n)
+
+
+```
+class Solution:
+
+    def __init__(self, nums: List[int]):
+        self.dict = {}
+        for index in range(len(nums)):
+            if not self.dict.get(nums[index]):
+                self.dict[nums[index]] = [index]
+            else:
+                self.dict[nums[index]].append(index)
+
+    def pick(self, target: int) -> int:
+        return random.choice(self.dict[target])
+
+
+# Your Solution object will be instantiated and called as such:
+# obj = Solution(nums)
+# param_1 = obj.pick(target)
+```
+
+## 382. Linked List Random Node
+
+Given a singly linked list, return a random node's value from the linked list. Each node must have the same probability of being chosen.
+
+Follow up:
+What if the linked list is extremely large and its length is unknown to you? Could you solve this efficiently without using extra space?
+
+### Example:
+
+```
+// Init a singly linked list [1,2,3].
+ListNode head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+Solution solution = new Solution(head);
+
+// getRandom() should return either 1, 2, or 3 randomly. Each element should have equal probability of returning.
+solution.getRandom();
+```
+
+### 方法一
+
+时间复杂度：O(n)
+
+空间复杂度：O(1)
+
+
+```
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+
+    def __init__(self, head: ListNode):
+        """
+        @param head The linked list's head.
+        Note that the head is guaranteed to be not null, so it contains at least one node.
+        """
+        self.head = head
+        self.count = self.get_count()
+
+    def get_count(self):
+            count = 1
+            cursor = self.head
+            while(cursor.next):
+                cursor = cursor.next
+                count += 1
+            return count
+
+    def getRandom(self) -> int:
+        """
+        Returns a random node's value.
+        """
+        cursor = self.head
+        randomer = random.randrange(self.count)
+        for i in range(randomer):
+            cursor =cursor.next
+        return cursor.val
+
+
+# Your Solution object will be instantiated and called as such:
+# obj = Solution(head)
+# param_1 = obj.getRandom()
+```
